@@ -1,11 +1,24 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace ObjectPrinting
 {
-    public class PrintingConfig<TOwner>
+    public class PrintingConfig<TOwner> 
     {
+        public PrintingConfig()
+        {
+            this.excludedTypes = new HashSet<Type>();
+        }
+
+        private PrintingConfig<TOwner> AddCulture(Type type, CultureInfo culture)
+        {
+            return this;
+        }
+
         public string PrintToString(TOwner obj)
         {
             return PrintToString(obj, 0);
@@ -37,5 +50,25 @@ namespace ObjectPrinting
             }
             return sb.ToString();
         }
+
+        public SerializeConfig<TOwner, TType> Printing<TType>()
+        {
+            return new SerializeConfig<TOwner, TType>(this);
+        }
+
+        public SerializeConfig<TOwner, TPropType> Printing<TPropType>(Expression<Func<TOwner, TPropType>> propertySelector)
+        {
+            return new SerializeConfig<TOwner, TPropType>(this);
+        }
+
+        private readonly HashSet<Type> excludedTypes;
+        
+        public PrintingConfig<TOwner> ExcludeType<TType>()
+        {
+            excludedTypes.Add(typeof(TType));
+            return this;
+        }
+
     }
+
 }
