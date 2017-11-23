@@ -14,9 +14,9 @@ namespace ObjectPrinting.Serialization
             PropertyPath = propertyPath;
         }
 
-        public PrintingConfig<TOwner> Using(Func<TPropertyType, string> fucc)
+        public PrintingConfig<TOwner> Using(Func<TPropertyType, string> serializator)
         {
-            printingConfig.PropertySerialization.Add(PropertyPath, fucc);
+            printingConfig.PropertySerialization.Add(PropertyPath, serializator);
             return printingConfig;
         }
     }

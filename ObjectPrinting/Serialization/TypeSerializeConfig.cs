@@ -9,12 +9,12 @@ namespace ObjectPrinting.Serialization
 
         public TypeSerializeConfig(PrintingConfig<TOwner> printingConfig)
         {
-            this.PrintingConfig = printingConfig;
+            PrintingConfig = printingConfig;
         }
 
-        public PrintingConfig<TOwner> Using(Func<TSerializble, string> fucc)
+        public PrintingConfig<TOwner> Using(Func<TSerializble, string> serializator)
         {
-            PrintingConfig.TypeSerialization.Add(typeof(TSerializble), fucc);
+            PrintingConfig.TypeSerialization.Add(typeof(TSerializble), serializator);
             return PrintingConfig;
         }
     }

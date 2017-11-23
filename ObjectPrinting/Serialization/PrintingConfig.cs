@@ -125,7 +125,7 @@ namespace ObjectPrinting.Serialization
             return false;
         }
 
-        private static string SerializeNumericWithCulturte(object o, CultureInfo culture)
+        private static string SerializeNumericWithCulturte(object o, IFormatProvider culture)
         {
             switch (o)
             {

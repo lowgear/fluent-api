@@ -31,7 +31,7 @@ namespace ObjectPrinting.Tests
             };
 
             var serialization = person.Serialize(conf => conf
-                .Printing(perso => perso.Age)
+                .Printing(person1 => person1.Age)
                 .Using(x => "kek"));
 
             Console.WriteLine(serialization);
@@ -61,7 +61,7 @@ namespace ObjectPrinting.Tests
         }
 
         [Test]
-        public void Default_WorksFineWithoutNestedObjects()
+        public void ByDefaultOnObjectsWithoutNestedObjects_ShouldSerializeAllProperties()
         {
             person = new Person {Name = "Alex", Age = 19};
             expectedLines = new[]
@@ -79,7 +79,7 @@ namespace ObjectPrinting.Tests
         }
 
         [Test]
-        public void Default_WorksFineWithNestedObjects()
+        public void ByDefaultOnObjectsWithNestedObjects_ShouldSerializeAllProperties()
         {
             person = new Person {Name = "Alex", Age = 19, Father = new Person {Name = "Alex", Age = 19}};
             expectedLines = new[]
@@ -102,7 +102,7 @@ namespace ObjectPrinting.Tests
         }
 
         [Test]
-        public void ExcludingType_WorksFine()
+        public void ExcludingType_ShouldSpecifiedTypeFromSerialization()
         {
             person = new Person {Name = "Alex", Age = 19};
             expectedLines = new[]
@@ -119,7 +119,7 @@ namespace ObjectPrinting.Tests
         }
 
         [Test]
-        public void AlternativeTypeSerialization_WorksFine()
+        public void AlternativeTypeSerialization_ShouldSerializeSpecifiedTypeWithFGivenFunction()
         {
             person = new Person {Name = "Alex", Age = 19};
             expectedLines = new[]
@@ -137,7 +137,7 @@ namespace ObjectPrinting.Tests
         }
 
         [Test]
-        public void SpecifyingDoubleCulture_WorksFine()
+        public void SpecifyingDoubleCulture_ShouldSerializeDoubleWithSpecifiedCulture()
         {
             foreach (var culture in CultureInfo.GetCultures(CultureTypes.AllCultures))
                 1.2.Serialize(conf => conf.Printing<double>()
@@ -146,34 +146,34 @@ namespace ObjectPrinting.Tests
         }
 
         [Test]
-        public void SpecifyingFloatCulture_WorksFine()
+        public void SpecifyingFloatCulture_ShouldSerializeFloatWithSpecifiedCulture()
         {
             foreach (var culture in CultureInfo.GetCultures(CultureTypes.AllCultures))
-                ((float) 1.2).Serialize(conf => conf.Printing<double>()
+                ((float) 1.2).Serialize(conf => conf.Printing<float>()
                         .Using(culture))
                     .Should().Be(1.2.ToString(culture) + Environment.NewLine);
         }
 
         [Test]
-        public void SpecifyingIntCulture_WorksFine()
+        public void SpecifyingIntCulture_ShouldSerializeIntWithSpecifiedCulture()
         {
             foreach (var culture in CultureInfo.GetCultures(CultureTypes.AllCultures))
-                7.Serialize(conf => conf.Printing<double>()
+                7.Serialize(conf => conf.Printing<int>()
                         .Using(culture))
-                    .Should().Be(1.2.ToString(culture) + Environment.NewLine);
+                    .Should().Be(7.ToString(culture) + Environment.NewLine);
         }
 
         [Test]
-        public void SpecifyingLongCulture_WorksFine()
+        public void SpecifyingLongCulture_ShouldSerializeLongWithSpecifiedCulture()
         {
             foreach (var culture in CultureInfo.GetCultures(CultureTypes.AllCultures))
-                7L.Serialize(conf => conf.Printing<double>()
+                7L.Serialize(conf => conf.Printing<long>()
                         .Using(culture))
-                    .Should().Be(1.2.ToString(culture) + Environment.NewLine);
+                    .Should().Be(7L.ToString(culture) + Environment.NewLine);
         }
 
         [Test]
-        public void AlternativePropertySerialization_WorksFine()
+        public void AlternativePropertySerialization_ShouldSerializeSpecifiedPropertyWithSpecifiedFunction()
         {
             person = new Person {Name = "Alex", Age = 19};
             expectedLines = new[]
@@ -191,7 +191,7 @@ namespace ObjectPrinting.Tests
         }
 
         [Test]
-        public void StringPropertyCutting_WorksFine()
+        public void StringPropertyCutting_ShouldCutStringPropertiesToSpecifiedLength()
         {
             person = new Person {Name = "Alex", Age = 19};
             expectedLines = new[]
@@ -209,7 +209,7 @@ namespace ObjectPrinting.Tests
         }
 
         [Test]
-        public void ExcludingProperty_WorksFine()
+        public void ExcludingProperty_ShouldExcludeSpecifiedPropertyFromSerialization()
         {
             person = new Person {Name = "Alex", Age = 19};
             expectedLines = new[]
