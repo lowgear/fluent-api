@@ -10,14 +10,10 @@ namespace ObjectPrinting.Tests
     [TestFixture]
     public class ObjectPrinterAcceptanceTests
     {
-        private Person person;
-        private PrintingConfig<Person> printer;
-        private string[] expectedLines;
-
         [Test]
         public void Demo()
         {
-            person = new Person
+            var person = new Person
             {
                 Name = "Alex",
                 Age = 19,
@@ -63,8 +59,8 @@ namespace ObjectPrinting.Tests
         [Test]
         public void ByDefaultOnObjectsWithoutNestedObjects_ShouldSerializeAllProperties()
         {
-            person = new Person {Name = "Alex", Age = 19};
-            expectedLines = new[]
+            var person = new Person {Name = "Alex", Age = 19};
+            var expectedLines = new[]
             {
                 "Person",
                 "\tAge = 19",
@@ -73,16 +69,16 @@ namespace ObjectPrinting.Tests
                 "\tId = Guid",
                 "\tName = Alex"
             };
-            printer = ObjectPrinter.For<Person>();
+            var printer = ObjectPrinter.For<Person>();
 
-            AssertSerializationMatchesExpectation();
+            AssertSerializationMatchesExpectation(person, printer, expectedLines);
         }
 
         [Test]
         public void ByDefaultOnObjectsWithNestedObjects_ShouldSerializeAllProperties()
         {
-            person = new Person {Name = "Alex", Age = 19, Father = new Person {Name = "Alex", Age = 19}};
-            expectedLines = new[]
+            var person = new Person {Name = "Alex", Age = 19, Father = new Person {Name = "Alex", Age = 19}};
+            var expectedLines = new[]
             {
                 "Person",
                 "\tAge = 19",
@@ -96,16 +92,16 @@ namespace ObjectPrinting.Tests
                 "\tId = Guid",
                 "\tName = Alex"
             };
-            printer = ObjectPrinter.For<Person>();
+            var printer = ObjectPrinter.For<Person>();
 
-            AssertSerializationMatchesExpectation();
+            AssertSerializationMatchesExpectation(person, printer, expectedLines);
         }
 
         [Test]
         public void ExcludingType_ShouldSpecifiedTypeFromSerialization()
         {
-            person = new Person {Name = "Alex", Age = 19};
-            expectedLines = new[]
+            var person = new Person {Name = "Alex", Age = 19};
+            var expectedLines = new[]
             {
                 "Person",
                 "\tFather = null",
@@ -113,16 +109,16 @@ namespace ObjectPrinting.Tests
                 "\tId = Guid",
                 "\tName = Alex"
             };
-            printer = ObjectPrinter.For<Person>().ExcludeType<int>();
+            var printer = ObjectPrinter.For<Person>().ExcludeType<int>();
 
-            AssertSerializationMatchesExpectation();
+            AssertSerializationMatchesExpectation(person, printer, expectedLines);
         }
 
         [Test]
         public void AlternativeTypeSerialization_ShouldSerializeSpecifiedTypeWithFGivenFunction()
         {
-            person = new Person {Name = "Alex", Age = 19};
-            expectedLines = new[]
+            var person = new Person {Name = "Alex", Age = 19};
+            var expectedLines = new[]
             {
                 "Person",
                 "\tAge = xxx",
@@ -131,9 +127,9 @@ namespace ObjectPrinting.Tests
                 "\tId = Guid",
                 "\tName = Alex"
             };
-            printer = ObjectPrinter.For<Person>().Printing<int>().Using(x => "xxx");
+            var printer = ObjectPrinter.For<Person>().Printing<int>().Using(x => "xxx");
 
-            AssertSerializationMatchesExpectation();
+            AssertSerializationMatchesExpectation(person, printer, expectedLines);
         }
 
         [Test]
@@ -175,8 +171,8 @@ namespace ObjectPrinting.Tests
         [Test]
         public void AlternativePropertySerialization_ShouldSerializeSpecifiedPropertyWithSpecifiedFunction()
         {
-            person = new Person {Name = "Alex", Age = 19};
-            expectedLines = new[]
+            var person = new Person {Name = "Alex", Age = 19};
+            var expectedLines = new[]
             {
                 "Person",
                 "\tAge = xxx",
@@ -185,16 +181,16 @@ namespace ObjectPrinting.Tests
                 "\tId = Guid",
                 "\tName = Alex"
             };
-            printer = ObjectPrinter.For<Person>().Printing(o => o.Age).Using(x => "xxx");
+            var printer = ObjectPrinter.For<Person>().Printing(o => o.Age).Using(x => "xxx");
 
-            AssertSerializationMatchesExpectation();
+            AssertSerializationMatchesExpectation(person, printer, expectedLines);
         }
 
         [Test]
         public void StringPropertyCutting_ShouldCutStringPropertiesToSpecifiedLength()
         {
-            person = new Person {Name = "Alex", Age = 19};
-            expectedLines = new[]
+            var person = new Person {Name = "Alex", Age = 19};
+            var expectedLines = new[]
             {
                 "Person",
                 "\tAge = 19",
@@ -203,16 +199,16 @@ namespace ObjectPrinting.Tests
                 "\tId = Guid",
                 "\tName = Al"
             };
-            printer = ObjectPrinter.For<Person>().Printing(o => o.Name).Take(2);
+            var printer = ObjectPrinter.For<Person>().Printing(o => o.Name).Take(2);
 
-            AssertSerializationMatchesExpectation();
+            AssertSerializationMatchesExpectation(person, printer, expectedLines);
         }
 
         [Test]
         public void ExcludingProperty_ShouldExcludeSpecifiedPropertyFromSerialization()
         {
-            person = new Person {Name = "Alex", Age = 19};
-            expectedLines = new[]
+            var person = new Person {Name = "Alex", Age = 19};
+            var expectedLines = new[]
             {
                 "Person",
                 "\tAge = 19",
@@ -220,15 +216,15 @@ namespace ObjectPrinting.Tests
                 "\tId = Guid",
                 "\tName = Alex"
             };
-            printer = ObjectPrinter.For<Person>().ExcludeProperty(o => o.Father);
+            var printer = ObjectPrinter.For<Person>().ExcludeProperty(o => o.Father);
 
-            AssertSerializationMatchesExpectation();
+            AssertSerializationMatchesExpectation(person, printer, expectedLines);
         }
 
-        private void AssertSerializationMatchesExpectation()
+        private static void AssertSerializationMatchesExpectation<T>(T obj, PrintingConfig<T> printer, string[] expectedLines)
         {
             var expected = string.Concat(expectedLines.Select(s => s + Environment.NewLine));
-            printer.PrintToString(person).Should().Be(expected);
+            printer.PrintToString(obj).Should().Be(expected);
         }
     }
 }

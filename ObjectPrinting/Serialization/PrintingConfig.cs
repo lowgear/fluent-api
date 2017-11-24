@@ -96,7 +96,7 @@ namespace ObjectPrinting.Serialization
         {
             if (TypeSerialization.TryGetValue(obj.GetType(), out var typePrinter))
             {
-                result = (string)typePrinter.DynamicInvoke(obj) + Environment.NewLine;
+                result = (string) typePrinter.DynamicInvoke(obj) + Environment.NewLine;
                 return true;
             }
             result = null;
@@ -107,7 +107,7 @@ namespace ObjectPrinting.Serialization
         {
             if (PropertySerialization.TryGetValue(path, out var propertyPrinter))
             {
-                result = (string)propertyPrinter.DynamicInvoke(obj) + Environment.NewLine;
+                result = (string) propertyPrinter.DynamicInvoke(obj) + Environment.NewLine;
                 return true;
             }
             result = null;

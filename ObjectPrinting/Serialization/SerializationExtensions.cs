@@ -39,10 +39,11 @@ namespace ObjectPrinting.Serialization
             string Cut(string s) => s.Substring(0, length);
             ((ISerializeConfig<TOwner>) config).PrintingConfig.PropertySerialization[config.PropertyPath] =
                 (Func<string, string>) Cut;
-            return ((ISerializeConfig<TOwner>)config).PrintingConfig;
+            return ((ISerializeConfig<TOwner>) config).PrintingConfig;
         }
 
-        public static string Serialize<TType>(this TType obj, Func<PrintingConfig<TType>, PrintingConfig<TType>> configuer = null)
+        public static string Serialize<TType>(this TType obj,
+            Func<PrintingConfig<TType>, PrintingConfig<TType>> configuer = null)
         {
             var printer = ObjectPrinter.For<TType>();
             return (configuer != null ? configuer(printer) : printer).PrintToString(obj);
